@@ -2,6 +2,8 @@
 
 Description goes here.
 
+Heavily based on swf-util[http://code.google.com/p/swf-util/] by Dennis Zhuang 
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
