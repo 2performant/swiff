@@ -1,4 +1,4 @@
-module SWFUtil
+class Swiff
   class PackedBits
 
     attr_accessor :bitIndex,:byteIndex,:value,:nextBitIndex,:nextByteIndex,:nextByteBoundary

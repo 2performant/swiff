@@ -1,4 +1,4 @@
-module SWFUtil
+class Swiff
 
   module HeaderInfo
 

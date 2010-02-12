@@ -1,4 +1,4 @@
-= swfutil
+= Swiff
 
 Description goes here.
 
