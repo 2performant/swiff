@@ -54,5 +54,9 @@ class TestSwfutil < Test::Unit::TestCase
       assert_equal 1, @swiff.frame_count
     end
 
+    should "be able to decompress a file" do
+      decompressed_file = File.read(fixture_path('clicktag-decompressed.swf'))
+      assert_equal decompressed_file, @swiff.decompress
+    end
   end
 end
