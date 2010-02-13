@@ -13,10 +13,10 @@ class Swiff
       end
     end
 
-    def compress(buffer)
+    def compress
       compressor = Zlib::Deflate.new
-      data = compressor.deflate(strip_header(buffer), Zlib::FINISH)
-      data = buffer[0,8] + data
+      data = compressor.deflate(strip_header(decompressed_bytes), Zlib::FINISH)
+      data = bytes[0,8] + data
       data[0] = ?C
       data
     end
@@ -37,8 +37,9 @@ class Swiff
       buff.unpack("L")[0]
     end
 
-    def strip_header
-      bytes[8,bytes.size-8]
+    def strip_header(buffer = nil)
+      buffer ||= bytes
+      buffer[8,bytes.size-8]
     end
 
     def is_compressed?

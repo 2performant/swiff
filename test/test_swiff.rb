@@ -58,5 +58,12 @@ class TestSwfutil < Test::Unit::TestCase
       decompressed_file = File.read(fixture_path('clicktag-decompressed.swf'))
       assert_equal decompressed_file, @swiff.decompress
     end
+
+    should "be able to compress a file" do
+      @swiff = Swiff.new fixture_path('clicktag-decompressed.swf')
+      compressed_file = File.read(fixture_path('clicktag.swf'))
+
+      assert_equal compressed_file, @swiff.compress
+    end
   end
 end
