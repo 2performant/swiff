@@ -17,7 +17,7 @@ class Swiff
         @signature=buffer[0,3]
       end
       if is_compressed?(buffer[0])
-        buffer=SWFDecompressor.new.uncompress(buffer)
+        buffer = SWFDecompressor.new.uncompress(buffer)
         @compression_type=COMPRESSED
       else
         @compression_type=UNCOMPRESSED
@@ -49,7 +49,7 @@ class Swiff
       buffer=nil
     end
 
-    def is_swf?(bytes)
+    def is_swf?
       bytes[0,3]=="FWS" or bytes[0,3]=="CWS"
     end
 

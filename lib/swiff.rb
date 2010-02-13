@@ -9,4 +9,8 @@ class Swiff
   def initialize(path)
     @path = path
   end
+
+  def bytes
+    @file_contents ||= File.read(@path)
+  end
 end
