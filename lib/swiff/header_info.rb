@@ -6,6 +6,7 @@ class Swiff
     COMPRESSED   = "compressed"
     UNCOMPRESSED = "uncompressed"
 
+    # TODO: Clean this up
     def parse_header
       @nbits = ((decompressed_bytes[8]&0xff)>>3)
       pbo = read_packed_bits(decompressed_bytes, 8, 5, @nbits ) 
@@ -22,19 +23,20 @@ class Swiff
       byte_pointer = pbo4.nextByteIndex + 2 
       
       @frame_rate = decompressed_bytes[byte_pointer]
-      byte_pointer+=1
+      byte_pointer += 1
       fc1 = decompressed_bytes[byte_pointer] & 0xFF
-      byte_pointer+=1
+      byte_pointer += 1
       
       fc2 = decompressed_bytes[byte_pointer] & 0xFF
-      byte_pointer+=1
-      @frame_count=(fc2<<8)+fc1 
+      byte_pointer += 1
+      @frame_count = (fc2<<8) + fc1 
     end
 
     def is_swf?
-      bytes[0,3]=="FWS" or bytes[0,3]=="CWS"
+      bytes[0,3] =="FWS" || bytes[0,3] == "CWS"
     end
 
+    # TODO: Clean this up
     def read_packed_bits(bytes,byte_marker,bit_marker,length)
       total = 0
       shift = 7 - bit_marker 
@@ -46,14 +48,14 @@ class Swiff
           bit =((bytes[byte_marker] & 0xff ) >> shift ) & 1 
           total = ( total << 1 ) + bit 
           bit_index = i 
-          shift-=1 
-          counter+=1 
-          if counter==length
+          shift -= 1 
+          counter += 1 
+          if counter == length
             break 
           end
         end
         byte_index = byte_marker 
-        byte_marker+=1
+        byte_marker += 1
         bit_marker = 0 
         shift = 7 
       end
