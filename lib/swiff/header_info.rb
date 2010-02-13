@@ -2,51 +2,33 @@ class Swiff
 
   module HeaderInfo
 
-    attr_accessor :signature,:compression_type,:version,:size,:nbits,:xmax,:ymax,:width,:height,:frame_rate,:frame_count,
+    attr_reader :signature,:compression_type,:version,:size,:nbits,:x_max,:y_max,:width,:height,:frame_rate, :frame_count
     COMPRESSED   = "compressed"
     UNCOMPRESSED = "uncompressed"
 
-    def parse_header(file)
-      @size=read_full_size(file)
-      buffer=File.open(file,"rb") do |f|
-        f.read
-      end
-      if !is_swf?(buffer)
-        raise RuntimeError.new,"File does not appear to be a swf file",caller
-      else
-        @signature=buffer[0,3]
-      end
-      if is_compressed?(buffer[0])
-        buffer = SWFDecompressor.new.uncompress(buffer)
-        @compression_type=COMPRESSED
-      else
-        @compression_type=UNCOMPRESSED
-      end
-      @version=buffer[3]
-      @nbits = ((buffer[8]&0xff)>>3)
-      pbo = read_packed_bits( buffer, 8, 5, @nbits ) 
-      pbo2 = read_packed_bits( buffer, pbo.nextByteIndex,pbo.nextBitIndex, @nbits ) 
+    def parse_header
+      @nbits = ((decompressed_bytes[8]&0xff)>>3)
+      pbo = read_packed_bits(decompressed_bytes, 8, 5, @nbits ) 
+      pbo2 = read_packed_bits(decompressed_bytes, pbo.nextByteIndex,pbo.nextBitIndex, @nbits) 
+      pbo3 = read_packed_bits(decompressed_bytes, pbo2.nextByteIndex,pbo2.nextBitIndex, @nbits) 
+      pbo4 = read_packed_bits(decompressed_bytes, pbo3.nextByteIndex,pbo3.nextBitIndex, @nbits) 
+
+      @x_max = pbo2.value
+      @y_max = pbo4.value 
       
-      pbo3 = read_packed_bits( buffer, pbo2.nextByteIndex,pbo2.nextBitIndex, @nbits ) 
-      
-      pbo4 = read_packed_bits( buffer, pbo3.nextByteIndex,pbo3.nextBitIndex, @nbits ) 
-      @xmax = pbo2.value
-      @ymax = pbo4.value 
-      
-      @width = convert_twips_to_pixels( @xmax ) 
-      @height = convert_twips_to_pixels( @ymax ) 
+      @width = convert_twips_to_pixels( @x_max ) 
+      @height = convert_twips_to_pixels( @y_max ) 
       
       byte_pointer = pbo4.nextByteIndex + 2 
       
-      @frame_rate = buffer[byte_pointer]
+      @frame_rate = decompressed_bytes[byte_pointer]
       byte_pointer+=1
-      fc1 = buffer[byte_pointer] & 0xFF
+      fc1 = decompressed_bytes[byte_pointer] & 0xFF
       byte_pointer+=1
       
-      fc2 = buffer[byte_pointer] & 0xFF
+      fc2 = decompressed_bytes[byte_pointer] & 0xFF
       byte_pointer+=1
       @frame_count=(fc2<<8)+fc1 
-      buffer=nil
     end
 
     def is_swf?
@@ -78,8 +60,12 @@ class Swiff
       return PackedBits.new(bit_index, byte_index, total ) 
     end
 
-    def  convert_twips_to_pixels(twips)
+    def convert_twips_to_pixels(twips)
       twips / 20 
+    end
+
+    def version
+      bytes[3]
     end
 
     def convert_pixels_to_twips( pixels )

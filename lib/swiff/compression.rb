@@ -21,10 +21,10 @@ class Swiff
       data
     end
 
-    def uncompress(bytes)
+    def decompress
       decompressor = Zlib::Inflate.new
       swf = decompressor.inflate(strip_header)
-      swf = bytes[0,8]+swf
+      swf = bytes[0,8] + swf
       swf[0] = ?F
       swf
     end
