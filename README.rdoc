@@ -16,4 +16,4 @@ Heavily based on swf-util[http://code.google.com/p/swf-util/] by Dennis Zhuang
 
 == Copyright
 
-Copyright (c) 2010 Andrei Bocan. See LICENSE for details.
+Copyright (c) 2010 2Perfomant. See LICENSE for details.
