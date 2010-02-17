@@ -1,4 +1,4 @@
-rquire 'rubygems'
+require 'rubygems'
 require 'rake'
 
 begin
