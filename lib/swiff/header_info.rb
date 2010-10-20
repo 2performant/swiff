@@ -8,7 +8,7 @@ class Swiff
 
     # TODO: Clean this up
     def parse_header
-      @nbits = ((decompressed_bytes[8]&0xff)>>3)
+      @nbits = ((decompressed_bytes.getbyte(8)&0xff)>>3)
       pbo = read_packed_bits(decompressed_bytes, 8, 5, @nbits ) 
       pbo2 = read_packed_bits(decompressed_bytes, pbo.nextByteIndex,pbo.nextBitIndex, @nbits) 
       pbo3 = read_packed_bits(decompressed_bytes, pbo2.nextByteIndex,pbo2.nextBitIndex, @nbits) 
@@ -22,12 +22,12 @@ class Swiff
       
       byte_pointer = pbo4.nextByteIndex + 2 
       
-      @frame_rate = decompressed_bytes[byte_pointer]
+      @frame_rate = decompressed_bytes.getbyte(byte_pointer)
       byte_pointer += 1
-      fc1 = decompressed_bytes[byte_pointer] & 0xFF
+      fc1 = decompressed_bytes.getbyte(byte_pointer) & 0xFF
       byte_pointer += 1
       
-      fc2 = decompressed_bytes[byte_pointer] & 0xFF
+      fc2 = decompressed_bytes.getbyte(byte_pointer) & 0xFF
       byte_pointer += 1
       @frame_count = (fc2<<8) + fc1 
     end
@@ -45,7 +45,7 @@ class Swiff
       byte_index = byte_marker 
       while counter<length
        (bit_marker...8).each do |i|
-          bit =((bytes[byte_marker] & 0xff ) >> shift ) & 1 
+          bit =((bytes.getbyte(byte_marker) & 0xff ) >> shift ) & 1 
           total = ( total << 1 ) + bit 
           bit_index = i 
           shift -= 1 
@@ -67,7 +67,7 @@ class Swiff
     end
 
     def version
-      bytes[3]
+      bytes.getbyte(3)
     end
 
     def convert_pixels_to_twips( pixels )
